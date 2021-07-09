@@ -1,0 +1,21 @@
+{
+  "name": "node-init",
+  "version": "0.1.0",
+  "description": "Node Project Initializer",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "node-init": "node bin/node-init.js",
+    "test": "echo do test..."
+  },
+  "author": "peterhs.kang@gmail.com",
+  "devDependencies": {
+    "lodash": "^4.17.15"
+  },
+  "bin": {
+    "node-init": "./bin/node-init.js"
+  },
+  "dependencies": {
+    "yargs": "^17.0.1"
+  }
+}
