@@ -1,6 +1,6 @@
 {
   "name": "node-init",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Node Project Initializer",
   "main": "index.js",
   "scripts": {
@@ -9,13 +9,13 @@
     "test": "echo do test..."
   },
   "author": "peterhs.kang@gmail.com",
-  "devDependencies": {
-    "lodash": "^4.17.15"
-  },
+  "devDependencies": {},
   "bin": {
     "node-init": "./bin/node-init.js"
   },
   "dependencies": {
+    "got": "~11.8.2",
+    "octokit": "~1.1.0",
     "yargs": "^17.0.1"
   }
 }
