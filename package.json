@@ -6,10 +6,9 @@
   "scripts": {
     "start": "node index.js",
     "node-init": "node bin/node-init.js",
-    "test": "echo do test..."
+    "test": "jest"
   },
   "author": "peterhs.kang@gmail.com",
-  "devDependencies": {},
   "bin": {
     "node-init": "./bin/node-init.js"
   },
@@ -17,5 +16,11 @@
     "got": "~11.8.2",
     "octokit": "~1.1.0",
     "yargs": "^17.0.1"
-  }
+  },
+  "devDependencies": {
+    "jest": "~27.0.6"
+  },
+  "nodeInitIgnore": [
+    "*"
+  ]
 }
