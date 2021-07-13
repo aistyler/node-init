@@ -1,5 +1,5 @@
 {
-  "name": "node-init",
+  "name": "@aistyler/node-init",
   "version": "1.0.0",
   "description": "Node Project Initializer",
   "main": "index.js",
@@ -21,6 +21,6 @@
     "jest": "~27.0.6"
   },
   "nodeInitIgnore": [
-    "*"
+    "**", ".*"
   ]
 }
