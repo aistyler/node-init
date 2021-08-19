@@ -13,15 +13,16 @@
     "node-init": "./bin/node-init.js"
   },
   "dependencies": {
-    "got": "~11.8.2",
-    "@octokit/core": "~3.5.1",
-    "picomatch": "^2.2.3",
-    "yargs": "^17.0.1"
+    "got": "11.8.2",
+    "@octokit/core": "3.5.1",
+    "picomatch": "2.2.3",
+    "yargs": "17.1.1"
   },
   "devDependencies": {
     "jest": "~27.0.6"
   },
   "nodeInitIgnore": [
-    "**", ".*"
+    "**",
+    ".*"
   ]
 }
