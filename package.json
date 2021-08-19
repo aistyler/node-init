@@ -3,20 +3,23 @@
   "version": "1.0.0",
   "description": "Node Project Initializer",
   "scripts": {
+    "dev": "node src/run.js",
     "start": "node bin/node-init.js",
+    "build": "webpack build -c ./config/webpack.config.js --mode=production",
+    "build:dev": "webpack build -c ./config/webpack.config.js --mode=development",
     "test": "jest"
   },
   "author": "peterhs.kang@gmail.com",
   "bin": {
     "node-init": "./bin/node-init.js"
   },
-  "dependencies": {
+  "devDependencies": {
     "got": "11.8.2",
     "@octokit/core": "3.5.1",
     "picomatch": "2.2.3",
-    "yargs": "17.1.1"
-  },
-  "devDependencies": {
+    "yargs": "17.1.1",
+    "webpack": "~5.50.0",
+    "webpack-cli": "~4.8.0",
     "jest": "~27.0.6"
   },
   "nodeInitIgnore": [
