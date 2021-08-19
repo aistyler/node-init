@@ -2,10 +2,8 @@
   "name": "@aistyler/node-init",
   "version": "1.0.0",
   "description": "Node Project Initializer",
-  "main": "index.js",
   "scripts": {
-    "start": "yarn node-init",
-    "node-init": "node bin/node-init.js",
+    "start": "node bin/node-init.js",
     "test": "jest"
   },
   "author": "peterhs.kang@gmail.com",
