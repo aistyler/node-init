@@ -6,7 +6,7 @@ function genConfig(webpackEnv) {
   const isDev = webpackEnv === "development";
   const isProd = webpackEnv === "production";
 
-  const { appDir, appRun, appBuildDir, } = paths(isDev);
+  const { appDir, appRun, appBuildDir } = paths(isDev);
 
   return {
     mode: process.env.NODE_ENV || "development",
