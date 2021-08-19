@@ -5,10 +5,13 @@ NodeJS project initializer
 ## Usage
 
 ```sh
-npx github:aistyler/node-init {node-init-package-repository} [glob pattern to be copied]
+npx aistyler/node-init {node-init-package-repository} [glob pattern to be copied]
 
-# e.g.
-npx github:aistyler/node-init github:aistyler/node-init-typescript "**"
+# e.g. 1
+npx aistyler/node-init aistyler/node-init-typescript "packages/react/**"
+
+# e.g. 2
+npx aistyler/node-init aistyler/node-init-typescript "packages/lint/**" "packages/lint/.*"
 ```
 
 ## Glob pattern
