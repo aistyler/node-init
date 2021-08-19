@@ -4,6 +4,8 @@ NodeJS project initializer
 
 ## Usage
 
+- basic usage using [npx](https://www.npmjs.com/package/npx)
+
 ```sh
 npx aistyler/node-init {node-init-package-repository} [glob pattern to be copied]
 
@@ -12,6 +14,24 @@ npx aistyler/node-init aistyler/node-init-typescript "packages/react/**"
 
 # e.g. 2
 npx aistyler/node-init aistyler/node-init-typescript "packages/lint/**" "packages/lint/.*"
+```
+
+- command line help output
+
+```txt
+Usage: node-init [options] [git-repo-url] [glob-patterns ...]
+
+Options:
+      --version  Show version number                                   [boolean]
+  -r, --ref      git reference to be donwloaded                         [string]
+  -V, --verbose  verbose output                       [boolean] [default: false]
+  -f, --force    Overwrite the existing files         [boolean] [default: false]
+  -d, --dryrun   Dry run                              [boolean] [default: false]
+  -o, --outdir   Output directory                       [string] [default: "./"]
+  -h             Show help                                             [boolean]
+
+Examples:
+  node-init github:aistyler/node-init/main
 ```
 
 ## Glob pattern
