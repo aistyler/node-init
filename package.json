@@ -1,6 +1,6 @@
 {
   "name": "@aistyler/node-init",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Node Project Initializer",
   "scripts": {
     "dev": "node src/run.js",
