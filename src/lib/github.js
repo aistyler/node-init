@@ -61,6 +61,10 @@ async function downloadFromGithub(repoUrl, globPattern, options) {
     return;
   }
 
+  if (globPattern && globPattern.length > 0 && options.topLevelDot) {
+    globPattern.push("./.*"); // add top-level 
+  }
+
   // override ref
   if (options.branch) {
     if (repoInfo.ref) console.warn("*** The target ref is overrided with the specified branch.");
@@ -121,9 +125,9 @@ async function downloadFromGithub(repoUrl, globPattern, options) {
     toBeDownloaded = toBeDownloaded.filter((e) => micromatch.isMatch(e.path, globPattern));
     console.log("# of files applied glob pattern:", toBeDownloaded.length);
     if (options.verbose) {
-      console.log("Removed files...");
-      const removed = treeInfo.data.tree.filter((e) => e.type === "blob" && !toBeDownloaded.find((ee) => e.path === ee.path));
-      removed.forEach((e) => console.log("  -", e.path));
+      const ignored = treeInfo.data.tree.filter((e) => e.type === "blob" && !toBeDownloaded.find((ee) => e.path === ee.path));
+      console.log("Ignored files: ", !ignored ? 0 : ignored.length);
+      ignored.forEach((e) => console.log("  -", e.path));
     }
   }
 
@@ -137,8 +141,8 @@ async function downloadFromGithub(repoUrl, globPattern, options) {
 
     const { yancIgnore } = packageJson;
     if (yancIgnore) {
-      console.log("Apply ignore files from package.json:", yancIgnore);
-      toBeDownloaded = toBeDownloaded.filter((e) => !micromatch.isMatch(e.path, yancIgnore));
+      //console.log("Apply ignore files from package.json:", yancIgnore);
+      //toBeDownloaded = toBeDownloaded.filter((e) => !micromatch.isMatch(e.path, yancIgnore));
     }
   }
   console.log("# of files to be downloaded:", toBeDownloaded.length);

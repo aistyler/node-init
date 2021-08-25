@@ -35,6 +35,11 @@ const argv = yargs(hideBin(process.argv))
       describe: "Dry run",
       type: "boolean",
     },
+    "topLevelDot": {
+      default: true,
+      describe: "include top-level dot(.) files",
+      type: "boolean",
+    },
     "o": {
       alias: "outdir",
       default: "./",
@@ -57,6 +62,7 @@ const argv = yargs(hideBin(process.argv))
     verbose: argv.verbose,
     force: argv.force,
     dryrun: argv.dryrun,
+    topLevelDot: argv.topLevelDot,
     outdir: argv.outdir,
   }
 ))();
