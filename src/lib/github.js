@@ -6,7 +6,7 @@ const { download } = require("./download");
 const micromatch = require('./micromatch');
 
 const octokit = new Octokit({
-  userAgent: "node-init"
+  userAgent: "yanc"
 });
 
 function _parseRepoUrl(repoUrl) {
@@ -17,7 +17,7 @@ function _parseRepoUrl(repoUrl) {
   const owner = res[0].split(":");
   if (owner.length > 2) return null;
   const repo = res[1];
-  const ref = res.length === 3 ? res[2]:"main";
+  const ref = res.length === 3 ? res[2]:"";
   return {
     server: owner.length === 2 ? owner[0] : "github",
     owner: owner.length === 1 ? owner[0] : owner[1],
@@ -39,13 +39,13 @@ async function _downloadBlobsInTree(repoInfo, tree, {outdir, force, dryrun}) {
       type: 'blob',
       sha: '67045665db202cf951f839a5f3e73efdcfd45021',
       size: 1610,
-      url: 'https://api.github.com/repos/aistyler/node-init/git/blobs/67045665db202cf951f839a5f3e73efdcfd45021'
+      url: 'https://api.github.com/repos/aistyler/yanc/git/blobs/67045665db202cf951f839a5f3e73efdcfd45021'
     },
   */
   const toBeDownloaded = tree.filter((e) => e.mode !== "040000" && (force || !fs.existsSync(path.join(outdir, e.path))));
   const promiseAll = toBeDownloaded.map((item) => {
     const filePath = path.join(outdir, item.path);
-    
+
     return dryrun 
       ? `${filePath} from ${_makeDownloadUrl(repoInfo, item)}` 
       : download(_makeDownloadUrl(repoInfo, item), { path: filePath });
@@ -56,33 +56,46 @@ async function _downloadBlobsInTree(repoInfo, tree, {outdir, force, dryrun}) {
 async function downloadFromGithub(repoUrl, globPattern, options) {
   const repoInfo = _parseRepoUrl(repoUrl);
   if (!repoInfo) {
-    console.error("!!! Invalid repo information,", repoUrl);
-    console.error("!!! Expected format: {owner-id}/{repo-name}/{branch-name}");
+    console.error("!!! Invalid repository,", repoUrl);
+    console.error("!!! Expected format: {owner}/{repo-name}[/{branch-name}]");
     return;
   }
+
   // override ref
-  if (options.ref) repoInfo.ref = options.ref;
+  if (options.branch) {
+    if (repoInfo.ref) console.warn("*** The target ref is overrided with the specified branch.");
+    repoInfo.ref = options.branch;
+  }
+  if (options.tag) {
+    if (options.branch) console.warn("*** The target ref is overrided with the specified tag.");
+    repoInfo.ref = options.tag;
+  }
+  if (!repoInfo.ref) {
+    // default use 'main' branch name
+    repoInfo.ref = "main";
+  }
 
   if (options.dryrun)
-    console.log("Try to test files from", repoInfo.ref, repoUrl);
+    console.log(`Try to test files of ${repoInfo.ref} from ${repoUrl}`);
   else
-    console.log("Try to download files from", repoInfo.ref, repoUrl);
+    console.log(`Try to download files of ${repoInfo.ref} from ${repoUrl}`);
 
   //
   // get ref info
-  let branchInfo;
+  let refInfo;
   try {
-    branchInfo = await octokit.request("GET /repos/{owner}/{repo}/git/ref/{ref}", {
+    // See https://docs.github.com/en/rest/reference/repos
+    refInfo = await octokit.request("GET /repos/{owner}/{repo}/git/ref/{ref}", {
       accept: "application/vnd.github.v3+json",
       ...repoInfo,
-      ref: `heads/${repoInfo.ref}`,
+      ref: options.tag ? `tags/${repoInfo.ref}` : `heads/${repoInfo.ref}`,
     });
   } catch (e) {
     console.error(`!!! Failed to retrieve the information of the branch:`, e.message);
     console.error(`!!! Parsed repo info: "${repoInfo.ref}" in "${repoInfo.owner}/${repoInfo.repo}"`);
     return;
   }
-  console.log("SHA of target branch:", branchInfo.data.object.sha);
+  console.log("SHA of target ref:", refInfo.data.object.sha);
 
   //
   // get tree info
@@ -91,11 +104,11 @@ async function downloadFromGithub(repoUrl, globPattern, options) {
     treeInfo = await octokit.request("GET /repos/{owner}/{repo}/git/trees/{tree_sha}", {
       accept: "application/vnd.github.v3+json",
       ...repoInfo,
-      tree_sha: branchInfo.data.object.sha,
+      tree_sha: refInfo.data.object.sha,
       recursive: "true",
     });
   } catch (e) {
-    console.error(`!!! Failed to retrieve the tree info from github:`, e.message);
+    console.error(`!!! Failed to retrieve the tree info:`, e.message);
     return;
   }
   let toBeDownloaded = treeInfo.data.tree.filter((e) => e.type === "blob"); // download "blob" only
@@ -122,10 +135,10 @@ async function downloadFromGithub(repoUrl, globPattern, options) {
     packageJson = await download(_makeDownloadUrl(repoInfo, packageJsonItem), {});
     packageJson = JSON.parse(packageJson);
 
-    const { nodeInitIgnore } = packageJson;
-    if (nodeInitIgnore) {
-      console.log("Apply ignore files from package.json:", nodeInitIgnore);
-      toBeDownloaded = toBeDownloaded.filter((e) => !micromatch.isMatch(e.path, nodeInitIgnore));
+    const { yancIgnore } = packageJson;
+    if (yancIgnore) {
+      console.log("Apply ignore files from package.json:", yancIgnore);
+      toBeDownloaded = toBeDownloaded.filter((e) => !micromatch.isMatch(e.path, yancIgnore));
     }
   }
   console.log("# of files to be downloaded:", toBeDownloaded.length);

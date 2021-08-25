@@ -4,12 +4,17 @@ const { hideBin } = require('yargs/helpers')
 const { downloadFromGithub } = require("./lib/github");
 
 const argv = yargs(hideBin(process.argv))
-  .usage("Usage: $0 [options] [git-repo-url] [glob-patterns ...]")
-  .example("$0 aistyler/yanc/main")
+  .usage("Usage: $0 [options] [git-repository] [glob-patterns ...]")
+  .example("$0 aistyler/yanc/main '**'")
   .options({
-    "r": {
-      alias: "ref",
-      describe: "git reference to be donwloaded",
+    "b": {
+      alias: "branch",
+      describe: "target branch name. e.g. 'master'",
+      type: "string",
+    },
+    "t": {
+      alias: "tag",
+      describe: "target tag name. e.g. 'v1.0.0'",
       type: "string",
     },
     "V": {
@@ -21,7 +26,7 @@ const argv = yargs(hideBin(process.argv))
     "f": {
       alias: "force",
       default: false,
-      describe: "Overwrite the existing files",
+      describe: "*overwrite* the existing files",
       type: "boolean",
     },
     "d": {
@@ -44,10 +49,11 @@ const argv = yargs(hideBin(process.argv))
 
 //console.log(argv);
 (async() => await downloadFromGithub(
-  argv._[0],        // github url
+  argv._[0],        // github repository
   argv._.slice(1),  // glob patterns
   {                 // options
-    ref: argv.ref,
+    branch: argv.branch,
+    tag: argv.tag,
     verbose: argv.verbose,
     force: argv.force,
     dryrun: argv.dryrun,
