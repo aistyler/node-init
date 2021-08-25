@@ -5,7 +5,7 @@ const { downloadFromGithub } = require("./lib/github");
 
 const argv = yargs(hideBin(process.argv))
   .usage("Usage: $0 [options] [git-repo-url] [glob-patterns ...]")
-  .example("$0 github:aistyler/node-init/main")
+  .example("$0 aistyler/yanc/main")
   .options({
     "r": {
       alias: "ref",

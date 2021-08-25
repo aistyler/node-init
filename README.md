@@ -1,25 +1,25 @@
-# node-init
+# yanc
 
-NodeJS project initializer
+Yet another node configuration utility
 
 ## Usage
 
 - basic usage using [npx](https://www.npmjs.com/package/npx)
 
 ```sh
-npx aistyler/node-init {node-init-package-repository} [glob pattern to be copied]
+npx aistyler/yanc {yanc-package-repository} [glob pattern to be copied]
 
 # e.g. 1
-npx aistyler/node-init aistyler/node-init-typescript "packages/react/**"
+npx aistyler/yanc aistyler/yanc-typescript "packages/react/**"
 
 # e.g. 2
-npx aistyler/node-init aistyler/node-init-typescript "packages/lint/**" "packages/lint/.*"
+npx aistyler/yanc aistyler/yanc-typescript "packages/lint/**" "packages/lint/.*"
 ```
 
 - command line help output
 
 ```txt
-Usage: node-init [options] [git-repo-url] [glob-patterns ...]
+Usage: yanc [options] [git-repo-url] [glob-patterns ...]
 
 Options:
       --version  Show version number                                   [boolean]
@@ -31,7 +31,7 @@ Options:
   -h             Show help                                             [boolean]
 
 Examples:
-  node-init github:aistyler/node-init/main
+  yanc github:aistyler/yanc/main
 ```
 
 ## Glob pattern
