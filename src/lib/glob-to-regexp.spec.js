@@ -2,44 +2,68 @@
 
 const globToRegexp = require("./glob-to-regexp");
 
-const pathList = [
-  "api",
-  "api/",
-  "/api",
-  "/api/",
-  "/api/.api",
-  "/api/user",
-  "/api/user/",
-  "/api/user/id",
-  "/api/event/id/",
-
-  "user",
-  "user/",
-  "/user",
-  "/user/",
-  "/user/.user",
-  "/user/event",
-  "/user/event/",
-  "/user/event/id",
-  "/user/event/id/",
-
-  "event",
-  "event/",
-  "/event",
-  "/event/",
-  "/event/.event",
-  "/event/user",
-  "/event/user/",
-  "/event/user/id",
-  "/event/user/id/",
-];
 
 describe("glob-to-regexp", () => {
   it("empty string", () => {
     const globPattern = "";
-    const opts = {globstar: true, ignore: false, flags: "g"};
+    const opts = {ignore: false};
+
+    let restr = globToRegexp(globPattern, opts);//`^((?!(${nodeInitIgnore.join("|")})).)*$$`;
+    expect(restr).toBe("");
+    // ignore
+    opts.ignore = true;
+    restr = globToRegexp(globPattern, opts);//`^((?!(${nodeInitIgnore.join("|")})).)*$$`;
+    expect(restr).toBe("");
+  });
+
+  it("'*'", () => {
+    const globPattern = "*";
+    const opts = {ignore: false};
+
+    let restr = globToRegexp(globPattern, opts);//`^((?!(${nodeInitIgnore.join("|")})).)*$$`;
+    expect(restr).toBe(".*");
+
+  });
+});
+
+describe("* ** match", () => {
+
+  const pathList = [
+    "api",
+    "api/",
+    "/api",
+    "/api/",
+    "/api/.api",
+    "/api/user",
+    "/api/user/",
+    "/api/user/id",
+    "/api/event/id/",
+  
+    "user",
+    "user/",
+    "/user",
+    "/user/",
+    "/user/.user",
+    "/user/event",
+    "/user/event/",
+    "/user/event/id",
+    "/user/event/id/",
+  
+    "event",
+    "event/",
+    "/event",
+    "/event/",
+    "/event/.event",
+    "/event/user",
+    "/event/user/",
+    "/event/user/id",
+    "/event/user/id/",
+  ];
+  
+  it("empty string", () => {
+    const globPattern = "";
+    const opts = {ignore: false};
     const regexpstr = globToRegexp(globPattern, opts);//`^((?!(${nodeInitIgnore.join("|")})).)*$$`;
-    console.log("regexpstr:",globPattern, regexpstr);
 
     const regexp = new RegExp(regexpstr, opts.flags);
     const res = pathList.filter((e) => regexp.test(e));
@@ -50,9 +74,8 @@ describe("glob-to-regexp", () => {
 
   it("empty string ignore", () => {
     const globPattern = "";
-    const opts = {globstar: true, ignore: true, flags: "g"};
+    const opts = {ignore: true};
     const regexpstr = globToRegexp(globPattern, opts);//`^((?!(${nodeInitIgnore.join("|")})).)*$$`;
-    console.log("regexpstr:",globPattern, regexpstr);
 
     const regexp = new RegExp(regexpstr, opts.flags);
     const res = pathList.filter((e) => regexp.test(e));
@@ -63,7 +86,7 @@ describe("glob-to-regexp", () => {
 
   it("'*'", () => {
     const globPattern = "*";
-    const opts = {globstar: false, ignore: false};
+    const opts = {ignore: false};
     const regexpstr = globToRegexp(globPattern, opts);//`^((?!(${nodeInitIgnore.join("|")})).)*$$`;
     console.log("regexpstr:",globPattern, regexpstr);
 
@@ -76,7 +99,7 @@ describe("glob-to-regexp", () => {
 
   it("'*' ignore", () => {
     const globPattern = "*";
-    const opts = {globstar: false, ignore: true};
+    const opts = {ignore: true};
     const regexpstr = globToRegexp(globPattern, opts);//`^((?!(${nodeInitIgnore.join("|")})).)*$$`;
     console.log("regexpstr:",globPattern, regexpstr);
 
@@ -89,7 +112,7 @@ describe("glob-to-regexp", () => {
 
   it("**/api/**", () => {
     const globPattern = "**/api/**";
-    const opts = { flags: "", globstar: false };
+    const opts = {};
     const regexpstr = globToRegexp(globPattern, opts);//`^((?!(${nodeInitIgnore.join("|")})).)*$$`;
     console.log("regexpstr:",globPattern, regexpstr);
 
@@ -102,7 +125,7 @@ describe("glob-to-regexp", () => {
 
   it("**/api/** ignore", () => {
     const globPattern = "**/api/**";
-    const opts = { flags: "", globstar: false, ignore: true };
+    const opts = { ignore: true };
     const regexpstr = globToRegexp(globPattern, opts);//`^((?!(${nodeInitIgnore.join("|")})).)*$$`;
     console.log("regexpstr:",globPattern, regexpstr);
 
@@ -115,7 +138,7 @@ describe("glob-to-regexp", () => {
 
   it("[**/api/**, **/user/**]", () => {
     const globPattern = ["**/api/**", "**/user/**"];
-    const opts = { flags: "", globstar: false };
+    const opts = {};
     const regexpstr = globToRegexp(globPattern, opts);//`^((?!(${nodeInitIgnore.join("|")})).)*$$`;
 
     const regexp = new RegExp(regexpstr, opts.flags);
@@ -128,7 +151,7 @@ describe("glob-to-regexp", () => {
 
   it("[**/api/**, **/user/**] ignore", () => {
     const globPattern = ["**/api/**", "**/user/**"];
-    const opts = { flags: "", globstar: false, ignore: true };
+    const opts = { ignore: true };
     const regexpstr = globToRegexp(globPattern, opts);//`^((?!(${nodeInitIgnore.join("|")})).)*$$`;
 
     const regexp = new RegExp(regexpstr, opts.flags);
@@ -137,5 +160,31 @@ describe("glob-to-regexp", () => {
     console.log("ignore regexpstr:",globPattern, regexpstr, res);
     expect(res.length).toBe(12);
     //const regexp = new RegExp(regexpstr);
+  });
+});
+
+describe("hidden files match", () => {
+  it("hidden files", () => {
+    const re = new RegExp(globToRegexp(
+      ".*",
+      {}
+    ));
+
+    const res = ["a", "a.b", ".a", ".a.b"].filter((e) => re.test(e));
+    console.log(">>>>>>>>>", res);
+    expect(res.length).toBe(3);
+    expect(res.indexOf("a")).toBe(-1);
+  });
+
+  it("hidden directories", () => {
+    const re = new RegExp(globToRegexp(
+      ".**",
+      {}
+    ));
+
+    const res = ["a/b", "a/b.c", "a/.b", "a/.b.c"].filter((e) => re.test(e));
+    console.log(">>>>>>>>>", res);
+    expect(res.length).toBe(3);
+    expect(res.indexOf("a/b")).toBe(-1);
   });
 });
