@@ -7,13 +7,13 @@ Yet another node configuration utility
 - basic usage using [npx](https://www.npmjs.com/package/npx)
 
 ```sh
-npx aistyler/yanc {yanc-package-repository} [glob pattern to be copied]
+npx aistyler/yanc-get-github {yanc-package-repository} [glob pattern to be copied]
 
 # e.g. 1
-npx aistyler/yanc aistyler/yanc-typescript "packages/react/**"
+npx aistyler/yanc-get-github aistyler/yanc-typescript "packages/react/**"
 
 # e.g. 2
-npx aistyler/yanc aistyler/yanc-typescript "packages/lint/**" "packages/lint/.*"
+npx aistyler/yanc-get-github aistyler/yanc-typescript "packages/lint/**" "packages/lint/.*"
 ```
 
 - command line help output
